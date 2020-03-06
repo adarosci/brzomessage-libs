@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrzoMessages.Test", "BrzoMessages.Test\BrzoMessages.Test.csproj", "{1F2CF0F7-9366-4FA1-B178-12FB4F9FC82C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrzoMessages.Client", "BrzoMessages.Client\BrzoMessages.Client.csproj", "{0224F738-2ED2-40CC-B0AF-ECEAAA1ADB66}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F2CF0F7-9366-4FA1-B178-12FB4F9FC82C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F2CF0F7-9366-4FA1-B178-12FB4F9FC82C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F2CF0F7-9366-4FA1-B178-12FB4F9FC82C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F2CF0F7-9366-4FA1-B178-12FB4F9FC82C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0224F738-2ED2-40CC-B0AF-ECEAAA1ADB66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0224F738-2ED2-40CC-B0AF-ECEAAA1ADB66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0224F738-2ED2-40CC-B0AF-ECEAAA1ADB66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0224F738-2ED2-40CC-B0AF-ECEAAA1ADB66}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB01FC70-22ED-4E09-B696-D0F747F886BD}
+	EndGlobalSection
+EndGlobal

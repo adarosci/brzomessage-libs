@@ -18,7 +18,7 @@ namespace BrzoMessages.Test
 
         private static bool S_HandlerMessages(MessageReceived message)
         {
-            //Console.WriteLine(message.data.Text);
+            Console.WriteLine($"Message received: {DateTime.Now} - {message.data.Info.RemoteJid} - {message.data?.Text}");
             return true;
         }
     }

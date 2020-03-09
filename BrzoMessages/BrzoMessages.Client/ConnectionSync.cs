@@ -92,9 +92,7 @@ namespace BrzoMessages.Client
                                 var obj = JsonConvert.DeserializeObject<dto.MessageReceivedSocket>(msg.Text);
                                 var data = JsonConvert.DeserializeObject<dto.MessageReceived>(obj.body.Data);
                                 
-                                Console.WriteLine($"Message received: {DateTime.Now} - {data?.data?.Text}");
-
-                                if (data != null && obj.version > lastVersion && data.data.Info.Id != lastMessageId)
+                                if (data != null && data.data.Info.Id != lastMessageId)
                                 {
                                     lastVersion = obj.version;
                                     lastMessageId = data.data.Info.Id;

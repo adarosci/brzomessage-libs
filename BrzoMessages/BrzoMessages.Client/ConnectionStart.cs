@@ -25,20 +25,20 @@ namespace BrzoMessages.Client
             client.Dispose();
         }
 
-        internal void Connect(string keyAccess)
+        internal string Connect(string keyAccess)
         {
             try
             {
-                var str = JsonConvert.SerializeObject(new { key_access = keyAccess });
-                var result = client.PostAsync($"{Config.CONNECT_URL}/connect?token={keyAccess}", new StringContent(str, Encoding.UTF8, "application/json")).Result;
+                var result = client.PostAsync($"{Config.CONNECT_URL}?token={keyAccess}", null).Result;
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    throw new Exception("Não foi possivel conectar");
+                    return "";
                 }
+                return result.Content.ReadAsStringAsync().Result;
             }
             catch (Exception)
             {
-                //throw;
+                return "";
             }
         }
     }

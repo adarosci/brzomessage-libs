@@ -9,42 +9,17 @@ namespace BrzoMessages.Test
     {
         static void Main(string[] args)
         {
-            var s = new Sync("554196584089", "aaaaaaaaaaa");
-
-            s.EventConsoleOnCancelKeyPress += S_EventConsoleOnCancelKeyPress;
-            s.EventCurrentDomainOnProcessExit += S_EventCurrentDomainOnProcessExit;
-            s.EventDefaultOnUnloading += S_EventDefaultOnUnloading;
-            s.EventErrorConnectionOrMessageProcessed += S_EventErrorConnectionOrMessageProcessed;
-
-            s.Connect(metodo);
+            var s = new BrzoSync("cad587f6-4f06-4c9f-9575-ae500b5f161c", "DOvJHQ-CSB-tBs-u2HhE6RhwT2t6nZZ7");
+            s.HandlerMessages += S_HandlerMessages;
+            s.Connect();
 
             Thread.Sleep(Timeout.Infinite);
         }
 
-        private static void S_EventErrorConnectionOrMessageProcessed(Exception exception)
+        private static bool S_HandlerMessages(MessageReceived message)
         {
-            Console.WriteLine(exception.Message);
-        }
-
-        private static void S_EventDefaultOnUnloading(System.Runtime.Loader.AssemblyLoadContext obj)
-        {
-            Console.WriteLine(obj.ToString());
-        }
-
-        private static void S_EventCurrentDomainOnProcessExit(object sender, EventArgs e)
-        {
-            Console.WriteLine(sender.ToString());
-        }
-
-        private static bool metodo(MessageReceived arg)
-        {
-            Console.WriteLine(arg.data.Text);
+            //Console.WriteLine(message.data.Text);
             return true;
-        }
-
-        private static void S_EventConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
-        {
-            Console.WriteLine(sender.ToString());
         }
     }
 }

@@ -5,10 +5,12 @@ using System.Runtime.Loader;
 namespace BrzoMessages.Client
 {
     public delegate bool DelegateHandlerMessages(MessageReceived message);
+    public delegate bool DelegateHandlerLogs(string message);
 
     public class BrzoSync : ConnectionSync
     {
         public event DelegateHandlerMessages HandlerMessages;
+        public event DelegateHandlerLogs HandlerLogs;
 
         private string privateKey;
         private string keyAccess;
@@ -67,6 +69,11 @@ namespace BrzoMessages.Client
         protected override void DisconnectionHappened(Exception exception)
         {
             Console.WriteLine(exception?.Message);
+        }
+
+        protected override void Logs(string log)
+        {
+            HandlerLogs?.Invoke(log);
         }
     }
 }

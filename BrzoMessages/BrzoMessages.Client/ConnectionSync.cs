@@ -68,13 +68,13 @@ namespace BrzoMessages.Client
                                 lastMessageId = c.Connect(keyAccess);
                             }
                         }
-                        Console.WriteLine($"Reconnection happened url: {client.Url} {DateTime.Now}");
+                        Logs($"Reconnection happened url: {client.Url} {DateTime.Now}");                        
                     });
                     client.DisconnectionHappened.Subscribe(info =>
                     {
-                        Console.WriteLine($"Disconnection happened, type: {info.Exception?.Message}");
                         if (info.Exception != null)
                         {
+                            Logs($"Disconnection happened, type: {info.Exception?.Message}");
                             using (var c = new ConnectionStop(keyAccess, privateKey))
                             {
                                 c.Disconnect(keyAccess);
@@ -94,6 +94,8 @@ namespace BrzoMessages.Client
                                 
                                 if (data != null && data.data.Info.Id != lastMessageId)
                                 {
+                                    Logs($"MessageReceived, text: {data?.data?.Text}");
+
                                     lastVersion = obj.version;
                                     lastMessageId = data.data.Info.Id;
                                     if (asynchronous)
@@ -135,6 +137,7 @@ namespace BrzoMessages.Client
         }
 
         protected abstract void DisconnectionHappened(Exception exception);
+        protected abstract void Logs(string log);
         protected abstract void MessageReceived(dto.MessageReceived message);
 
         private async Task StartSendingPing(IWebsocketClient client, CancellationToken cancellation)

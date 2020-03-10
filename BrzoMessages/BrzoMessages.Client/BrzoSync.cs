@@ -5,7 +5,7 @@ using System.Runtime.Loader;
 namespace BrzoMessages.Client
 {
     public delegate bool DelegateHandlerMessages(MessageReceived message);
-    public delegate bool DelegateHandlerLogs(string message);
+    public delegate void DelegateHandlerLogs(string message);
 
     public class BrzoSync : ConnectionSync
     {

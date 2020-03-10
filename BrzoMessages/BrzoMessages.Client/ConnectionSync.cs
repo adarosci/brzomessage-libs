@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BrzoMessages.Client.Exceptions;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.WebSockets;
@@ -45,95 +46,114 @@ namespace BrzoMessages.Client
                 return client;
             });
 
-            Task.Run(() =>
+            try
             {
-                ExitEvent = new ManualResetEvent(false);
-
                 var auth = new ConnectionAuth(keyAccess, privateKey).Authenticate();
                 urlAuth = new Uri(url + $"?token={keyAccess}&p={auth}");
 
-
-                using (IWebsocketClient client = new WebsocketClient(urlAuth, factory))
+                Task.Run(() =>
                 {
-                    client.Name = "Bitmex";
-                    client.ReconnectTimeout = TimeSpan.FromSeconds(30);
-                    client.ErrorReconnectTimeout = TimeSpan.FromSeconds(30);
-                    client.ReconnectionHappened.Subscribe(type =>
-                    {
-                        if (!connected)
-                        {
-                            using (var c = new ConnectionStart(keyAccess, privateKey))
-                            {
-                                this.connected = true;
-                                lastMessageId = c.Connect(keyAccess);
-                            }
-                        }
-                        Logs($"Reconnection happened url: {client.Url} {DateTime.Now}");                        
-                    });
-                    client.DisconnectionHappened.Subscribe(info =>
-                    {
-                        if (info.Exception != null)
-                        {
-                            Logs($"Disconnection happened, type: {info.Exception?.Message}");
-                            using (var c = new ConnectionStop(keyAccess, privateKey))
-                            {
-                                c.Disconnect(keyAccess);
-                            }
-                            this.connected = false;
-                            ExitEvent.Set();
-                        }
-                    });
-                    client.MessageReceived.Subscribe(msg =>
-                    {
-                        try
-                        {
-                            if (!msg.Text.Contains("ping"))
-                            {
-                                var obj = JsonConvert.DeserializeObject<dto.MessageReceivedSocket>(msg.Text);
-                                var data = JsonConvert.DeserializeObject<dto.MessageReceived>(obj.body.Data);
-                                
-                                if (data != null && data.data.Info.Id != lastMessageId)
-                                {
-                                    Logs($"MessageReceived, text: {data?.data?.Text}");
+                    ExitEvent = new ManualResetEvent(false);
 
-                                    lastVersion = obj.version;
-                                    lastMessageId = data.data.Info.Id;
-                                    if (asynchronous)
+                    if (auth == "")
+                    {
+                        Logs("Error auth retry in 5 secounds");
+                        Task.Delay(5000).Wait();
+                    }
+                    else
+                    {
+                        using (IWebsocketClient client = new WebsocketClient(urlAuth, factory))
+                        {
+                            client.Name = "Bitmex";
+                            client.ReconnectTimeout = TimeSpan.FromSeconds(30);
+                            client.ErrorReconnectTimeout = TimeSpan.FromSeconds(30);
+                            client.ReconnectionHappened.Subscribe(type =>
+                            {
+                                if (!connected)
+                                {
+                                    using (var c = new ConnectionStart(keyAccess, privateKey))
                                     {
-                                        MessageReceived(data);
-                                    }
-                                    else
-                                    {
-                                        Task.Run(() =>
-                                        {
-                                            MessageReceived(data);
-                                        });
+                                        this.connected = true;
+                                        lastMessageId = c.Connect(keyAccess);
                                     }
                                 }
-                            }
+                                Logs($"Reconnection happened url: {client.Url} {DateTime.Now}");
+                            });
+                            client.DisconnectionHappened.Subscribe(info =>
+                            {
+                                if (info.Exception != null)
+                                {
+                                    Logs($"Disconnection happened, type: {info.Exception?.Message}");
+                                    using (var c = new ConnectionStop(keyAccess, privateKey))
+                                    {
+                                        c.Disconnect(keyAccess);
+                                    }
+                                    this.connected = false;
+                                    ExitEvent.Set();
+                                }
+                            });
+                            client.MessageReceived.Subscribe(msg =>
+                            {
+                                try
+                                {
+                                    if (!msg.Text.Contains("ping"))
+                                    {
+                                        var obj = JsonConvert.DeserializeObject<dto.MessageReceivedSocket>(msg.Text);
+                                        var data = JsonConvert.DeserializeObject<dto.MessageReceived>(obj.body.Data);
+
+                                        if (data != null && data.data.Info.Id != lastMessageId)
+                                        {
+                                            Logs($"MessageReceived, text: {data?.data?.Text}");
+
+                                            lastVersion = obj.version;
+                                            lastMessageId = data.data.Info.Id;
+                                            if (asynchronous)
+                                            {
+                                                MessageReceived(data);
+                                            }
+                                            else
+                                            {
+                                                Task.Run(() =>
+                                                {
+                                                    MessageReceived(data);
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+                            });
+
+                            client.Start().Wait();
+
+                            var tokenSource1 = new CancellationTokenSource();
+                            var tokenSource2 = new CancellationTokenSource();
+
+                            Task.Run(() => StartSendingPing(client, tokenSource1.Token), tokenSource1.Token);
+                            Task.Run(() => SwitchUrl(client, tokenSource2.Token), tokenSource2.Token);
+
+                            ExitEvent.WaitOne();
+
+                            tokenSource1.Cancel();
+                            tokenSource2.Cancel();
                         }
-                        catch (Exception)
-                        {
-
-                        }
-                    });
-
-                    client.Start().Wait();
-
-                    var tokenSource1 = new CancellationTokenSource();
-                    var tokenSource2 = new CancellationTokenSource();
-
-                    Task.Run(() => StartSendingPing(client, tokenSource1.Token), tokenSource1.Token);
-                    Task.Run(() => SwitchUrl(client, tokenSource2.Token), tokenSource2.Token);
-
-                    ExitEvent.WaitOne();
-
-                    tokenSource1.Cancel();
-                    tokenSource2.Cancel();
-                }
-                if (!dispose)
-                    connect();
-            });
+                    }
+                    if (!dispose)
+                        connect();
+                });
+            }
+            catch (TimeoutException ex)
+            {
+                Logs(ex.Message);
+            }
+            catch (AuthException ex)
+            {
+                Logs(ex.Message);
+                throw;
+            }
         }
 
         protected abstract void DisconnectionHappened(Exception exception);

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BrzoMessages.Client.Exceptions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -27,13 +28,17 @@ namespace BrzoMessages.Client
                 var result = client.PostAsync($"{Config.AUTH_URL}?token={keyAccess}", null).Result;
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    throw new Exception("Não foi possivel conectar");
+                    throw new AuthException("Authorization failed keyAccess or privateKey");
                 }
                 return result.Content.ReadAsStringAsync().Result;
             }
-            catch (Exception)
+            catch (TimeoutException ex)
             {
-                return "";
+                throw;
+            }
+            catch (AuthException ex)
+            {
+                throw;
             }
         }
 

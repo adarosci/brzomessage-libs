@@ -8,8 +8,8 @@ namespace BrzoMessages.Test
     class Program
     {
         static void Main(string[] args)
-        {
-            var s = new BrzoSync("cad587f6-4f06-4c9f-9575-ae500b5f161c", "DOvJHQ-CSB-tBs-u2HhE6RhwT2t6nZZ73");
+        {            
+            var s = new BrzoSync("cad587f6-4f06-4c9f-9575-ae500b5f161c", "DOvJHQ-CSB-tBs-u2HhE6RhwT2t6nZZ7");
             s.HandlerMessages += S_HandlerMessages;
             s.HandlerLogs += S_HandlerLogs;
             s.Connect();

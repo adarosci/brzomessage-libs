@@ -7,7 +7,7 @@ namespace BrzoMessages.Client
     public delegate bool DelegateHandlerMessages(MessageReceived message);
     public delegate void DelegateHandlerLogs(string message);
 
-    public class BrzoSync : ConnectionSync
+    public class Sync : ConnectionSync
     {
         public event DelegateHandlerMessages HandlerMessages;
         public event DelegateHandlerLogs HandlerLogs;
@@ -15,7 +15,7 @@ namespace BrzoMessages.Client
         private string privateKey;
         private string keyAccess;
 
-        public BrzoSync(string keyAccess, string privateKey, bool synchronous = true) : base(keyAccess, privateKey, synchronous)
+        public Sync(string keyAccess, string privateKey, bool synchronous = true) : base(keyAccess, privateKey, synchronous)
         {
             this.keyAccess = keyAccess;
             this.privateKey = privateKey;

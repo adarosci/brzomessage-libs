@@ -3,8 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageIconUrl>https://brzomessages.com/favicon.ico</PackageIconUrl>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <Company>BrzoMessages.Client</Company>
+    <Description>- Implementação de recebimento das mensagens recebidas via socket
+- Implementação do envio de mensagens (Text, Template, Audio, Document, Video)</Description>
   </PropertyGroup>
 
   <ItemGroup>

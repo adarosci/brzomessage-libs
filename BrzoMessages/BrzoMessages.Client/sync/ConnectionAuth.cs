@@ -40,6 +40,10 @@ namespace BrzoMessages.Client
             {
                 throw;
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public void Dispose()

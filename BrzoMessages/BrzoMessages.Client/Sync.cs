@@ -5,11 +5,13 @@ using System.Runtime.Loader;
 namespace BrzoMessages.Client
 {
     public delegate bool DelegateHandlerMessages(MessageReceived message);
+    public delegate bool DelegateHandlerAck(MessageAck message);
     public delegate void DelegateHandlerLogs(string message);
 
     public class Sync : ConnectionSync
     {
         public event DelegateHandlerMessages HandlerMessages;
+        public event DelegateHandlerAck HandlerAck;
         public event DelegateHandlerLogs HandlerLogs;
 
         private string privateKey;
@@ -43,7 +45,30 @@ namespace BrzoMessages.Client
                     {
                         using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
                         {
-                            c.Ok(message);
+                            c.Ok(message.data.Info.Id, message.data.Info.RemoteJid);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+
+        protected override void MessageAck(MessageAck message)
+        {
+            try
+            {
+                if (message != null)
+                {
+                    var result = HandlerAck?.Invoke(message);
+                    if (result.HasValue && result.Value)
+                    {
+                        using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
+                        {
+                            c.Ok(message.ID, message.To);
                         }
                     }
                 }
@@ -75,5 +100,6 @@ namespace BrzoMessages.Client
         {
             HandlerLogs?.Invoke(log);
         }
+
     }
 }

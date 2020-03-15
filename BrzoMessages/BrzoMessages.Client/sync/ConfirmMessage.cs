@@ -26,11 +26,11 @@ namespace BrzoMessages.Client
             client.Dispose();
         }
 
-        internal void Ok(MessageReceived message)
+        internal void Ok(string Id, string RemoteJid)
         {
             try
             {
-                var str = JsonConvert.SerializeObject(new { message.data.Info.Id, message.data.Info.RemoteJid });
+                var str = JsonConvert.SerializeObject(new { Id, RemoteJid });
                 var result = client.PostAsync($"{Config.CONFIRM_MESSAGE_URL}?token={keyAccess}", new StringContent(str, Encoding.UTF8, "application/json")).Result;
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {

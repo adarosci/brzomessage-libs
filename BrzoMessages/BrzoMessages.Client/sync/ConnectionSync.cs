@@ -20,6 +20,7 @@ namespace BrzoMessages.Client
         private Uri urlAuth;
         private bool connected;
         private string lastMessageId;
+        private string lastAck;
         private int lastVersion;
 
         public ConnectionSync(string keyAccess, string privateKey, bool asynchronous)
@@ -99,24 +100,28 @@ namespace BrzoMessages.Client
                                     if (!msg.Text.Contains("ping"))
                                     {
                                         var obj = JsonConvert.DeserializeObject<dto.MessageReceivedSocket>(msg.Text);
+
                                         var data = JsonConvert.DeserializeObject<dto.MessageReceived>(obj.body.Data);
-
-                                        if (data != null && data.data.Info.Id != lastMessageId)
+                                        if (data != null && data.data != null && data.data.Info.Id != lastMessageId)
                                         {
-                                            Logs($"MessageReceived, text: {data?.data?.Text}");
-
                                             lastVersion = obj.version;
                                             lastMessageId = data.data.Info.Id;
+
                                             if (asynchronous)
-                                            {
                                                 MessageReceived(data);
-                                            }
                                             else
+                                                Task.Run(() => MessageReceived(data));
+                                        }
+                                        else
+                                        {
+                                            var ack = JsonConvert.DeserializeObject<dto.MessageAck>(obj.body.Data);
+                                            if (ack != null && lastAck != (ack.ID + ack.Ack))
                                             {
-                                                Task.Run(() =>
-                                                {
-                                                    MessageReceived(data);
-                                                });
+                                                lastAck = ack.ID + ack.Ack;
+                                                if (asynchronous)
+                                                    MessageAck(ack);
+                                                else
+                                                    Task.Run(() => MessageAck(ack));
                                             }
                                         }
                                     }
@@ -154,11 +159,19 @@ namespace BrzoMessages.Client
                 Logs(ex.Message);
                 throw;
             }
+            catch (Exception ex)
+            {
+                Logs("Error auth retry in 5 secounds");
+                Task.Delay(5000).Wait();
+
+                connect();
+            }
         }
 
         protected abstract void DisconnectionHappened(Exception exception);
         protected abstract void Logs(string log);
         protected abstract void MessageReceived(dto.MessageReceived message);
+        protected abstract void MessageAck(dto.MessageAck message);
 
         private async Task StartSendingPing(IWebsocketClient client, CancellationToken cancellation)
         {

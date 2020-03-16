@@ -8,7 +8,7 @@ namespace BrzoMessages.Client.dto
     public abstract class MessageHeader
     {
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [JsonProperty("destiny")]
         public List<string> Destiny { get; set; }

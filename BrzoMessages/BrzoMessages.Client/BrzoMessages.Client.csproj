@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageIconUrl>https://brzomessages.com/favicon.ico</PackageIconUrl>
-    <Version>1.3.1</Version>
+    <Version>1.3.2</Version>
     <Company>BrzoMessages.Client</Company>
     <Description>- Implementação de Ack de mensagens</Description>
   </PropertyGroup>

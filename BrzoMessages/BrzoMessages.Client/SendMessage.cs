@@ -17,7 +17,7 @@ namespace BrzoMessages.Client
         public SendMessage(string keyAccess, string privateKey)
         {
             client = new HttpClient();
-            url = new Uri($"http://localhost:3333/v1/messages/send?token={keyAccess}");
+            url = new Uri($"https://api.brzomessages.com/v1/messages/send?token={keyAccess}");
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {privateKey}");
         }
 

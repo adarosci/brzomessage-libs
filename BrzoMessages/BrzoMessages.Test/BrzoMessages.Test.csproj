@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BrzoMessages.Client\BrzoMessages.Client.csproj" />
+    <PackageReference Include="BrzoMessages.Client" Version="1.3.3" />
   </ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@ namespace BrzoMessages.Test
     {
         static void Main(string[] args)
         {            
-            var s = new Sync("cad587f6-4f06-4c9f-9575-ae500b5f161c", "DOvJHQ-CSB-tBs-u2HhE6RhwT2t6nZZ7");
+            var s = new Sync("token", "privateKey");
             s.HandlerMessages += S_HandlerMessages;
             s.HandlerAck += S_HandlerAck;
             s.HandlerLogs += S_HandlerLogs;

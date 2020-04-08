@@ -13,7 +13,7 @@ namespace BrzoMessages.Test.WEB
 
         public ReceivedEvents()
         {
-            s = new Sync("cad587f6-4f06-4c9f-9575-ae500b5f161c", "DOvJHQ-CSB-tBs-u2HhE6RhwT2t6nZZ7");
+            s = new Sync("token", "privatekey");
             s.HandlerMessages += S_HandlerMessages;
             s.HandlerLogs += S_HandlerLogs;
             s.Connect();

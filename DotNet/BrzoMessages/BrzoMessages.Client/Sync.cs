@@ -40,14 +40,14 @@ namespace BrzoMessages.Client
             {
                 if (message != null)
                 {
-                    var result = HandlerMessages?.Invoke(message);
-                    if (result.HasValue && result.Value)
-                    {
-                        using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
-                        {
-                            c.Ok(message.data.Info.Id, message.data.Info.RemoteJid);
-                        }
-                    }
+                    HandlerMessages?.Invoke(message);
+                    //if (result.HasValue && result.Value)
+                    //{
+                    //    using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
+                    //    {
+                    //        c.Ok(message.data.Info.Id, message.data.Info.RemoteJid);
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)
@@ -63,14 +63,14 @@ namespace BrzoMessages.Client
             {
                 if (message != null)
                 {
-                    var result = HandlerAck?.Invoke(message);
-                    if (result.HasValue && result.Value)
-                    {
-                        using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
-                        {
-                            c.Ok(message.ID, message.To);
-                        }
-                    }
+                    HandlerAck?.Invoke(message);
+                    //if (result.HasValue && result.Value)
+                    //{
+                    //    using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
+                    //    {
+                    //        c.Ok(message.ID, message.To);
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)

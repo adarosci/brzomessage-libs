@@ -17,6 +17,7 @@ namespace BrzoMessages.Client
         private readonly bool asynchronous;
         private ManualResetEvent ExitEvent;
         private readonly Uri url;
+        private string auth;
         private Uri urlAuth;
         private bool connected;
         private string lastMessageId;
@@ -49,7 +50,7 @@ namespace BrzoMessages.Client
 
             try
             {
-                var auth = new ConnectionAuth(keyAccess, privateKey).Authenticate();
+                auth = new ConnectionAuth(keyAccess, privateKey).Authenticate();
                 urlAuth = new Uri(url + $"?token={keyAccess}&p={auth}");
 
                 Task.Run(() =>
@@ -87,7 +88,7 @@ namespace BrzoMessages.Client
                                     Logs($"Disconnection happened, type: {info.Exception?.Message}");
                                     using (var c = new ConnectionStop(keyAccess, privateKey))
                                     {
-                                        c.Disconnect(keyAccess);
+                                        c.Disconnect(keyAccess, auth);
                                     }
                                     this.connected = false;
                                     ExitEvent.Set();
@@ -111,6 +112,13 @@ namespace BrzoMessages.Client
                                                 MessageReceived(data);
                                             else
                                                 Task.Run(() => MessageReceived(data));
+
+                                            client.Send(JsonConvert.SerializeObject(new
+                                            {
+                                                Token = keyAccess,
+                                                data.data.Info.Id,
+                                                data.data.Info.RemoteJid
+                                            }));
                                         }
                                         else
                                         {
@@ -122,6 +130,13 @@ namespace BrzoMessages.Client
                                                     MessageAck(ack);
                                                 else
                                                     Task.Run(() => MessageAck(ack));
+
+                                                client.Send(JsonConvert.SerializeObject(new
+                                                {
+                                                    Token = keyAccess,
+                                                    Id = ack.ID,
+                                                    RemoteJid = ack.T
+                                                }));
                                             }
                                         }
                                     }
@@ -177,7 +192,7 @@ namespace BrzoMessages.Client
         {
             while (true)
             {
-                await Task.Delay(1000);
+                await Task.Delay(10000);
                 if (cancellation.IsCancellationRequested)
                 {
                     return;
@@ -209,7 +224,7 @@ namespace BrzoMessages.Client
         {
             using (var c = new ConnectionStop(keyAccess, privateKey))
             {
-                c.Disconnect(keyAccess);
+                c.Disconnect(keyAccess, auth);
             }
             ExitEvent.Set();
         }

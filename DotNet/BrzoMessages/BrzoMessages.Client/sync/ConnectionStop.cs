@@ -25,11 +25,11 @@ namespace BrzoMessages.Client
             client.Dispose();
         }
 
-        internal void Disconnect(string accessKey)
+        internal void Disconnect(string accessKey, string auth)
         {
             try
             {
-                var result = client.PostAsync($"{Config.DISCONNECT_URL}?token={keyAccess}", null).Result;
+                var result = client.PostAsync($"{Config.DISCONNECT_URL}?token={keyAccess}&auth={auth}", null).Result;
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     throw new Exception("Não foi possivel conectar");

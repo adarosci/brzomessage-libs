@@ -135,7 +135,7 @@ namespace BrzoMessages.Client
                                                 {
                                                     Token = keyAccess,
                                                     Id = ack.ID,
-                                                    RemoteJid = ack.T
+                                                    RemoteJid = ack.To
                                                 }));
                                             }
                                         }

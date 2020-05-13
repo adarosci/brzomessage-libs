@@ -168,11 +168,20 @@ namespace BrzoMessages.Client
             catch (TimeoutException ex)
             {
                 Logs(ex.Message);
+
+                Logs("Error auth retry in 5 secounds");
+                Task.Delay(5000).Wait();
+
+                connect();
             }
             catch (AuthException ex)
             {
                 Logs(ex.Message);
-                throw;
+
+                Logs("Error auth retry in 5 secounds");
+                Task.Delay(5000).Wait();
+
+                connect();
             }
             catch (Exception ex)
             {

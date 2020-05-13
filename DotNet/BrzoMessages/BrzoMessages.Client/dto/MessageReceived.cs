@@ -23,6 +23,8 @@
     {
         public Info Info { get; set; }
         public string Text { get; set; }
+        public string Type { get; set; }
+        public string Caption { get; set; }
         public ContextInfo ContextInfo { get; set; }
     }
 

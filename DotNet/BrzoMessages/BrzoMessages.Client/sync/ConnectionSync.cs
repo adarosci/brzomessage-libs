@@ -67,8 +67,8 @@ namespace BrzoMessages.Client
                         using (IWebsocketClient client = new WebsocketClient(urlAuth, factory))
                         {
                             client.Name = "Bitmex";
-                            client.ReconnectTimeout = TimeSpan.FromSeconds(30);
-                            client.ErrorReconnectTimeout = TimeSpan.FromSeconds(30);
+                            client.ReconnectTimeout = TimeSpan.FromSeconds(120);
+                            client.ErrorReconnectTimeout = TimeSpan.FromSeconds(120);
                             client.ReconnectionHappened.Subscribe(type =>
                             {
                                 if (!connected)
@@ -98,7 +98,7 @@ namespace BrzoMessages.Client
                             {
                                 try
                                 {
-                                    if (!msg.Text.Contains("ping"))
+                                    if (!msg.Text.Equals("ping"))
                                     {
                                         var obj = JsonConvert.DeserializeObject<dto.MessageReceivedSocket>(msg.Text);
 
@@ -109,16 +109,9 @@ namespace BrzoMessages.Client
                                             lastMessageId = data.data.Info.Id;
 
                                             if (asynchronous)
-                                                MessageReceived(data);
+                                                MessageReceived(data, client);
                                             else
-                                                Task.Run(() => MessageReceived(data));
-
-                                            client.Send(JsonConvert.SerializeObject(new
-                                            {
-                                                Token = keyAccess,
-                                                data.data.Info.Id,
-                                                data.data.Info.RemoteJid
-                                            }));
+                                                Task.Run(() => MessageReceived(data, client));
                                         }
                                         else
                                         {
@@ -131,12 +124,15 @@ namespace BrzoMessages.Client
                                                 else
                                                     Task.Run(() => MessageAck(ack));
 
-                                                client.Send(JsonConvert.SerializeObject(new
+                                                Task.Run(() =>
                                                 {
-                                                    Token = keyAccess,
-                                                    Id = ack.ID,
-                                                    RemoteJid = ack.To
-                                                }));
+                                                    client.Send(JsonConvert.SerializeObject(new
+                                                    {
+                                                        Token = keyAccess,
+                                                        Id = ack.ID,
+                                                        RemoteJid = ack.To
+                                                    }));
+                                                });
                                             }
                                         }
                                     }
@@ -194,7 +190,7 @@ namespace BrzoMessages.Client
 
         protected abstract void DisconnectionHappened(Exception exception);
         protected abstract void Logs(string log);
-        protected abstract void MessageReceived(dto.MessageReceived message);
+        protected abstract void MessageReceived(dto.MessageReceived message, IWebsocketClient client);
         protected abstract void MessageAck(dto.MessageAck message);
 
         private async Task StartSendingPing(IWebsocketClient client, CancellationToken cancellation)

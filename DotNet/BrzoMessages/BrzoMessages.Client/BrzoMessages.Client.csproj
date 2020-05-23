@@ -3,9 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageIconUrl>https://brzomessages.com/favicon.ico</PackageIconUrl>
-    <Version>1.4.3</Version>
+    <Version>1.4.9</Version>
     <Company>BrzoMessages.Client</Company>
     <Description>- Mudanças na forma de recebimento e resposta de confirmação</Description>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

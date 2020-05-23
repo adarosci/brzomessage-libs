@@ -1,6 +1,9 @@
 ﻿using BrzoMessages.Client.dto;
+using Newtonsoft.Json;
 using System;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
+using Websocket.Client;
 
 namespace BrzoMessages.Client
 {
@@ -34,20 +37,46 @@ namespace BrzoMessages.Client
             connect();
         }
 
-        protected override void MessageReceived(MessageReceived message)
+        protected override void MessageReceived(MessageReceived message, IWebsocketClient client)
         {
             try
             {
                 if (message != null)
                 {
-                    HandlerMessages?.Invoke(message);
-                    //if (result.HasValue && result.Value)
-                    //{
-                    //    using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
-                    //    {
-                    //        c.Ok(message.data.Info.Id, message.data.Info.RemoteJid);
-                    //    }
-                    //}
+                    var result = HandlerMessages?.Invoke(message);
+                    if (result.HasValue && result.Value)
+                    {
+                        Task.Run(() =>
+                        {
+                            try
+                            {
+                                using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
+                                {
+                                    c.Ok(message.data.Info.Id, message.data.Info.RemoteJid);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+                        });
+                        Task.Run(() =>
+                        {
+                            try
+                            {
+                                client.Send(JsonConvert.SerializeObject(new
+                                {
+                                    Token = keyAccess,
+                                    message.data.Info.Id,
+                                    message.data.Info.RemoteJid
+                                }));
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+                        });
+                    }
                 }
             }
             catch (Exception ex)

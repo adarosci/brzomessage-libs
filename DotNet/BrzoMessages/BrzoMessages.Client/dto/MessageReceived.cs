@@ -47,8 +47,4 @@
         public int version { get; set; }
         public Body body { get; set; }
     }
-
-
-
-
 }

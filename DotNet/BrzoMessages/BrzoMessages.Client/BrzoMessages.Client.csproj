@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageIconUrl>https://brzomessages.com/favicon.ico</PackageIconUrl>
-    <Version>1.4.9</Version>
+    <Version>1.5.1</Version>
     <Company>BrzoMessages.Client</Company>
-    <Description>- Mudanças na forma de recebimento e resposta de confirmação</Description>
+    <Description>- Correção na pilha de memoria quando estava desconctado</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NATS.Client" Version="0.11.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Websocket.Client" Version="4.1.85" />
   </ItemGroup>

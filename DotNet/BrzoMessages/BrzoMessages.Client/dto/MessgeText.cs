@@ -12,7 +12,17 @@ namespace BrzoMessages.Client.dto
 
         [JsonProperty("destiny")]
         public List<string> Destiny { get; set; }
+
+        [JsonProperty("context")]
+        public MessageContext Context { get; set; }
     }
+
+    public class MessageContext
+    {
+        [JsonProperty("message_id")]
+        public string MessageId { get; set; }
+    }
+
     public class MessageText : MessageHeader
     {
         [JsonProperty("text")]

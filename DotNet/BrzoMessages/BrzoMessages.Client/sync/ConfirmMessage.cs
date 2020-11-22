@@ -30,12 +30,12 @@ namespace BrzoMessages.Client
         {
             try
             {
-                var str = JsonConvert.SerializeObject(new { Id, RemoteJid });
-                var result = client.PostAsync($"{Config.CONFIRM_MESSAGE_URL}?token={keyAccess}", new StringContent(str, Encoding.UTF8, "application/json")).Result;
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    throw new Exception("Não foi possivel confirmar mensagem");
-                }
+                //var str = JsonConvert.SerializeObject(new { Id, RemoteJid });
+                //var result = client.PostAsync($"{Config.CONFIRM_MESSAGE_URL}?token={keyAccess}", new StringContent(str, Encoding.UTF8, "application/json")).Result;
+                //if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                //{
+                //    throw new Exception("Não foi possivel confirmar mensagem");
+                //}
             }
             catch (Exception)
             {

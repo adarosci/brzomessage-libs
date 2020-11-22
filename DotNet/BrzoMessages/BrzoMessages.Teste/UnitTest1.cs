@@ -20,7 +20,11 @@ namespace BrzoMessages.Teste
             {
                 Id = Guid.NewGuid(),
                 Destiny = new List<string>() { "5511..." },
-                Text = "text"
+                Text = "text",
+                Context = new MessageContext
+                {
+                    MessageId = ""
+                }
             });
             Console.WriteLine("", ok, code, error);
             Assert.IsTrue(ok);

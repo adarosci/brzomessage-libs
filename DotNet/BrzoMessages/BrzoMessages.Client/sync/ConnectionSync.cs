@@ -11,7 +11,7 @@ namespace BrzoMessages.Client
 {
     public abstract class ConnectionSync : IDisposable
     {
-        private bool dispose;
+        protected bool dispose;
         private readonly string keyAccess;
         private readonly string privateKey;
         private readonly bool asynchronous;
@@ -19,10 +19,8 @@ namespace BrzoMessages.Client
         private readonly Uri url;
         private string auth;
         private Uri urlAuth;
-        private bool connected;
+        protected bool connected;
         private string lastMessageId;
-        private string lastAck;
-        private int lastVersion;
 
         public ConnectionSync(string keyAccess, string privateKey, bool asynchronous)
         {
@@ -35,6 +33,7 @@ namespace BrzoMessages.Client
 
         protected void connect()
         {
+            this.connected = false;
             var factory = new Func<ClientWebSocket>(() =>
             {
                 var client = new ClientWebSocket
@@ -67,8 +66,8 @@ namespace BrzoMessages.Client
                         using (IWebsocketClient client = new WebsocketClient(urlAuth, factory))
                         {
                             client.Name = "Bitmex";
-                            client.ReconnectTimeout = TimeSpan.FromSeconds(120);
-                            client.ErrorReconnectTimeout = TimeSpan.FromSeconds(120);
+                            client.ReconnectTimeout = TimeSpan.FromMinutes(5);
+                            client.ErrorReconnectTimeout = TimeSpan.FromMinutes(5);
                             client.ReconnectionHappened.Subscribe(type =>
                             {
                                 if (!connected)
@@ -103,9 +102,8 @@ namespace BrzoMessages.Client
                                         var obj = JsonConvert.DeserializeObject<dto.MessageReceivedSocket>(msg.Text);
 
                                         var data = JsonConvert.DeserializeObject<dto.MessageReceived>(obj.body.Data);
-                                        if (data != null && data.data != null && data.data.Info.Id != lastMessageId)
+                                        if (data != null && data.data != null)
                                         {
-                                            lastVersion = obj.version;
                                             lastMessageId = data.data.Info.Id;
 
                                             if (asynchronous)
@@ -116,10 +114,13 @@ namespace BrzoMessages.Client
                                         else
                                         {
                                             var ack = JsonConvert.DeserializeObject<dto.MessageAck>(obj.body.Data);
-                                            if (ack != null && lastAck != (ack.ID + ack.Ack))
+                                            if (ack != null)
                                             {
-                                                lastAck = ack.ID + ack.Ack;
-                                                if (asynchronous)
+                                                if (ack.Ack == -1)
+                                                {
+                                                    MessageJSON(ack.To);
+                                                }
+                                                else if (asynchronous)
                                                     MessageAck(ack);
                                                 else
                                                     Task.Run(() => MessageAck(ack));
@@ -158,7 +159,7 @@ namespace BrzoMessages.Client
                         }
                     }
                     if (!dispose)
-                        connect();
+                        Task.Run(() => connect());
                 });
             }
             catch (TimeoutException ex)
@@ -168,7 +169,8 @@ namespace BrzoMessages.Client
                 Logs("Error auth retry in 5 secounds");
                 Task.Delay(5000).Wait();
 
-                connect();
+                if (!dispose)
+                    Task.Run(() => connect());
             }
             catch (AuthException ex)
             {
@@ -177,14 +179,16 @@ namespace BrzoMessages.Client
                 Logs("Error auth retry in 5 secounds");
                 Task.Delay(5000).Wait();
 
-                connect();
+                if (!dispose)
+                    Task.Run(() => connect());
             }
             catch (Exception ex)
             {
                 Logs("Error auth retry in 5 secounds");
                 Task.Delay(5000).Wait();
 
-                connect();
+                if (!dispose)
+                    Task.Run(() => connect());
             }
         }
 
@@ -192,6 +196,7 @@ namespace BrzoMessages.Client
         protected abstract void Logs(string log);
         protected abstract void MessageReceived(dto.MessageReceived message, IWebsocketClient client);
         protected abstract void MessageAck(dto.MessageAck message);
+        protected abstract void MessageJSON(string message);
 
         private async Task StartSendingPing(IWebsocketClient client, CancellationToken cancellation)
         {
@@ -227,6 +232,7 @@ namespace BrzoMessages.Client
 
         public void Dispose()
         {
+            dispose = true;
             using (var c = new ConnectionStop(keyAccess, privateKey))
             {
                 c.Disconnect(keyAccess, auth);

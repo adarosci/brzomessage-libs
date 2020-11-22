@@ -1,4 +1,5 @@
 ﻿using BrzoMessages.Client.dto;
+using BrzoMessages.Client.NatsConn;
 using Newtonsoft.Json;
 using System;
 using System.Runtime.Loader;
@@ -7,22 +8,16 @@ using Websocket.Client;
 
 namespace BrzoMessages.Client
 {
-    public delegate bool DelegateHandlerMessages(MessageReceived message);
-    public delegate bool DelegateHandlerAck(MessageAck message);
-    public delegate bool DelegateHandlerJSON(string message);
-    public delegate void DelegateHandlerLogs(string message);
-
-    public class Sync : ConnectionSync
+    internal class SyncV2 : ConnectionNats
     {
         public event DelegateHandlerMessages HandlerMessages;
         public event DelegateHandlerAck HandlerAck;
-        public event DelegateHandlerJSON HandlerJSON;
         public event DelegateHandlerLogs HandlerLogs;
 
         private string privateKey;
         private string keyAccess;
 
-        public Sync(string keyAccess, string privateKey, bool synchronous = true) : base(keyAccess, privateKey, synchronous)
+        private SyncV2(string keyAccess, string privateKey, bool synchronous = true) : base(keyAccess, privateKey, synchronous)
         {
             this.keyAccess = keyAccess;
             this.privateKey = privateKey;
@@ -51,7 +46,7 @@ namespace BrzoMessages.Client
         {
             get
             {
-                return dispose;
+                return false;
             }
         }
 
@@ -111,28 +106,6 @@ namespace BrzoMessages.Client
                 if (message != null)
                 {
                     HandlerAck?.Invoke(message);
-                    //if (result.HasValue && result.Value)
-                    //{
-                    //    using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))
-                    //    {
-                    //        c.Ok(message.ID, message.To);
-                    //    }
-                    //}
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-
-        protected override void MessageJSON(string message)
-        {
-            try
-            {
-                if (message != null)
-                {
-                    HandlerJSON?.Invoke(message);
                     //if (result.HasValue && result.Value)
                     //{
                     //    using (var c = new ConfirmMessage(this.keyAccess, this.privateKey))

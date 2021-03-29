@@ -25,6 +25,7 @@
         public string Text { get; set; }
         public string Type { get; set; }
         public string Caption { get; set; }
+        public int Length { get; set; }
         public ContextInfo ContextInfo { get; set; }
     }
 

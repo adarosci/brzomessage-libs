@@ -81,6 +81,8 @@ namespace BrzoMessages.Client.dto
     {
         [JsonProperty("url")]
         public string Url { get; set; }
+        [JsonProperty("content_length")]
+        public string ContentLength { get; set; }
     }
 
     public class MessageAudio : MessageHeader

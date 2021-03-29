@@ -138,7 +138,7 @@ namespace BrzoMessages.Client
                                         }
                                     }
                                 }
-                                catch (Exception)
+                                catch (Exception ex)
                                 {
 
                                 }

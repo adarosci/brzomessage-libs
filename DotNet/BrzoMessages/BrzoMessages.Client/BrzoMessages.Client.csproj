@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageIconUrl>https://brzomessages.com/favicon.ico</PackageIconUrl>
-    <Version>1.5.1</Version>
+    <Version>1.6.2</Version>
     <Company>BrzoMessages.Client</Company>
-    <Description>- Correção na pilha de memoria quando estava desconctado</Description>
+    <Description>inclusao de campo lenght no body do evento e campo conten_lenght no envio de audio</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 

@@ -79,7 +79,7 @@ namespace BrzoMessages.Client
                             }
                         });
                         Task.Run(() =>
-                        {
+                        {                            
                             try
                             {
                                 client.Send(JsonConvert.SerializeObject(new

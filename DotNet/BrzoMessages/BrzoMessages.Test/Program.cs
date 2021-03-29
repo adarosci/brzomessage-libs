@@ -11,11 +11,13 @@ namespace BrzoMessages.Test
         {
             var t = new Thread(() =>
             {
-                var s = new Sync("cad587f6-4f06-4c9f-9575-ae500b5f161c", "DOvJHQ-CSB-tBs-u2HhE6RhwT2t6nZZ7");
+                var s = new Sync("", "");
                 s.HandlerMessages += S_HandlerMessages;
                 s.HandlerAck += S_HandlerAck;
                 s.HandlerLogs += S_HandlerLogs;
+
                 s.HandlerJSON += S_HandlerJSON;
+
                 s.Connect();
                 
                 //int i = 0;

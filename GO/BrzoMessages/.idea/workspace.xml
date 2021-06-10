@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f98365f4-86e9-43ac-bea3-eca96d925959" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/BrzoMessages.Client.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/BrzoMessages.Client.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/Exceptions/AuthException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/Exceptions/AuthException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/Interfaces/ISendMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/Interfaces/ISendMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/NatsConn/ConnectionNats.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/NatsConn/ConnectionNats.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/SendMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/SendMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/Sync.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/Sync.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/SyncV2.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/SyncV2.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/config/Config.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/config/Config.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/dto/MessageAck.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/dto/MessageAck.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/dto/MessageReceived.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/dto/MessageReceived.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/dto/MessgeText.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/dto/MessgeText.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConfirmMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConfirmMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionAuth.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionAuth.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionStart.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionStart.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionStop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionStop.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionSync.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Client/sync/ConnectionSync.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/BrzoMessages.Test.WEB.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/BrzoMessages.Test.WEB.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Controllers/WeatherForecastController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Controllers/WeatherForecastController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Properties/launchSettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/ReceivedEvents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/ReceivedEvents.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/Startup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/WeatherForecast.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/WeatherForecast.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/appsettings.Development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test.WEB/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test/BrzoMessages.Test.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test/BrzoMessages.Test.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Test/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Teste/BrzoMessages.Teste.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Teste/BrzoMessages.Teste.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Teste/UnitTest1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.Teste/UnitTest1.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.sln" beforeDir="false" afterPath="$PROJECT_DIR$/../../DotNet/BrzoMessages/BrzoMessages.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/actions.go" beforeDir="false" afterPath="$PROJECT_DIR$/actions.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages.go" beforeDir="false" afterPath="$PROJECT_DIR$/messages.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/url.go" beforeDir="false" afterPath="$PROJECT_DIR$/url.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file:///usr/lib/go-1.16" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1tcsCmFE3pg6oPWJXAkWCKKB7uL" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../materialize/doutorcred/backend" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+</project>

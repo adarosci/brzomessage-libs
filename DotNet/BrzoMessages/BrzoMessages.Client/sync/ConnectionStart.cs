@@ -29,7 +29,7 @@ namespace BrzoMessages.Client
         {
             try
             {
-                var result = client.PostAsync($"{Config.CONNECT_URL}?token={keyAccess}", null).Result;
+                var result = client.PostAsync($"{Config.NewConfig().CONNECT_URL}?token={keyAccess}", null).Result;
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     return "";

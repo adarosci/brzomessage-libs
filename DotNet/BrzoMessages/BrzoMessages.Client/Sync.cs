@@ -1,7 +1,6 @@
 ﻿using BrzoMessages.Client.dto;
 using Newtonsoft.Json;
 using System;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Websocket.Client;
 
@@ -28,7 +27,6 @@ namespace BrzoMessages.Client
             this.privateKey = privateKey;
 
             AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnProcessExit;
-            AssemblyLoadContext.Default.Unloading += DefaultOnUnloading;
             Console.CancelKeyPress += ConsoleOnCancelKeyPress;
         }
 
@@ -149,10 +147,6 @@ namespace BrzoMessages.Client
         }
 
         private void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
-        {
-            Dispose();
-        }
-        private void DefaultOnUnloading(AssemblyLoadContext obj)
         {
             Dispose();
         }

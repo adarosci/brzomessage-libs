@@ -29,7 +29,7 @@ namespace BrzoMessages.Client
         {
             try
             {
-                var result = client.PostAsync($"{Config.DISCONNECT_URL}?token={keyAccess}&auth={auth}", null).Result;
+                var result = client.PostAsync($"{Config.NewConfig().DISCONNECT_URL}?token={keyAccess}&auth={auth}", null).Result;
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     throw new Exception("Não foi possivel conectar");

@@ -28,7 +28,7 @@ namespace BrzoMessages.Client
             this.keyAccess = keyAccess;
             this.privateKey = privateKey;
             this.asynchronous = asynchronous;
-            url = new Uri($"{Config.SOCKET_URL}/{keyAccess}");
+            url = new Uri($"{Config.NewConfig().SOCKET_URL}/{keyAccess}");
         }
 
         protected void connect()

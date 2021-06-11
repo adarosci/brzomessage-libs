@@ -25,7 +25,7 @@ namespace BrzoMessages.Client
         {
             try
             {
-                var result = client.PostAsync($"{Config.AUTH_URL}?token={keyAccess}", null).Result;
+                var result = client.PostAsync($"{Config.NewConfig().AUTH_URL}?token={keyAccess}", null).Result;
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     throw new AuthException("Authorization failed keyAccess or privateKey");

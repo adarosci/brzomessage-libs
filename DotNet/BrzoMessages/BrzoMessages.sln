@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrzoMessages.Client", "Brzo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrzoMessages.Test.WEB", "BrzoMessages.Test.WEB\BrzoMessages.Test.WEB.csproj", "{FE5F05C8-9F64-496F-B1C8-C9A0629764BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrzoMessages.Teste", "BrzoMessages.Teste\BrzoMessages.Teste.csproj", "{8BAD10E4-6DF9-402B-89C3-24D6028DCDA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrzoMessages.Teste", "BrzoMessages.Teste\BrzoMessages.Teste.csproj", "{8BAD10E4-6DF9-402B-89C3-24D6028DCDA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teste", "Teste\Teste.csproj", "{BE6E062B-A4E8-43BF-85C2-06131DC319C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8BAD10E4-6DF9-402B-89C3-24D6028DCDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BAD10E4-6DF9-402B-89C3-24D6028DCDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BAD10E4-6DF9-402B-89C3-24D6028DCDA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE6E062B-A4E8-43BF-85C2-06131DC319C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6E062B-A4E8-43BF-85C2-06131DC319C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6E062B-A4E8-43BF-85C2-06131DC319C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6E062B-A4E8-43BF-85C2-06131DC319C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

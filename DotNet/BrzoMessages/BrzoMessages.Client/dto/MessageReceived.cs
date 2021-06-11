@@ -29,6 +29,14 @@
         public ContextInfo ContextInfo { get; set; }
     }
 
+    public class Message
+    {
+        public string type { get; set; }
+        public object data { get; set; }
+        public string file { get; set; }
+        public string wid { get; set; }
+    }
+
     public class MessageReceived
     {
         public string type { get; set; }

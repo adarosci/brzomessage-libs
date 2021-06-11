@@ -1,38 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BrzoMessages.Client.Exceptions;
 using NATS.Client;
+using Newtonsoft.Json;
 using Websocket.Client;
 
 namespace BrzoMessages.Client.NatsConn
 {
     public abstract class ConnectionNats : IDisposable
     {
+        private string containerID;
+        private string baseURL;
         private bool dispose;
         private string keyAccess;
         private string privateKey;
-        private bool asynchronous;
         private IConnection c;
-        private LoginToken client;
         private IAsyncSubscription messageReceived;
-        private IAsyncSubscription messageJson;
-        private IAsyncSubscription ping;
+        private IAsyncSubscription messageDisconnect;
         protected bool connected;
         private object _lock = new object();
 
-        class LoginToken
-        {
-            public Guid Token { get; set; }
-            public string PrivateKey { get; set; }
-            public Guid ClientID { get; set; }
-            public int PersonSessionWhatsappID { get; set; }
-        }
         class ErrorRequest
         {
-            public string Error { get; set; }
+            public string Message { get; set; }
             public int Code { get; set; }
         }
         class CallRequest
@@ -45,18 +39,19 @@ namespace BrzoMessages.Client.NatsConn
             public string Message { get; set; }
         }
 
-        public ConnectionNats(string keyAccess, string privateKey, bool asynchronous)
+        public ConnectionNats(string keyAccess, string privateKey, string baseURL)
         {
+            this.baseURL = baseURL;
             this.dispose = false;
             this.keyAccess = keyAccess;
             this.privateKey = privateKey;
-            this.asynchronous = asynchronous;
+
+            Task.Run(() => StartSendingPing());
         }
 
-        protected abstract void DisconnectionHappened(Exception exception);
-        protected abstract void Logs(string log);
-        protected abstract void MessageReceived(dto.MessageReceived message, IWebsocketClient client);
+        protected abstract bool MessageReceived(dto.MessageReceived message);
         protected abstract void MessageAck(dto.MessageAck message);
+        protected abstract void MessageJSON(string message);
 
         protected void connect()
         {
@@ -64,14 +59,22 @@ namespace BrzoMessages.Client.NatsConn
             {
                 try
                 {
-                    Options opts = ConnectionFactory.GetDefaultOptions();
-                    opts.Url = Config.NATS_URL;
+                    Console.WriteLine("Conectando...");
 
-                    opts.ServerDiscoveredEventHandler += (sender, args) =>
+                    var config = Config.NewConfig(this.baseURL);
+
+                    var client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {privateKey}");
+
+                    var result = client.PostAsync($"{config.MAGANER_URL}/api/messages/connect?token={keyAccess}", new StringContent("", Encoding.UTF8, "application/json")).Result;
+                    if (result.StatusCode != System.Net.HttpStatusCode.OK)
                     {
-                        Console.WriteLine("A new server has joined the cluster:");
-                        Console.WriteLine("    " + String.Join(", ", args.Conn.DiscoveredServers));
-                    };
+                        throw new Exception("Não foi possivel conectar", new Exception(result.StatusCode.ToString()));
+                    }
+
+                    Options opts = ConnectionFactory.GetDefaultOptions();
+
+                    opts.Url = config.NATS_URL;
 
                     opts.ClosedEventHandler += (sender, args) =>
                     {
@@ -91,97 +94,70 @@ namespace BrzoMessages.Client.NatsConn
 
                     c = new ConnectionFactory().CreateConnection(opts);
 
-                    var token = new LoginToken
-                    {
-                        PrivateKey = privateKey,
-                        Token = Guid.Parse(keyAccess)
-                    };
+                    containerID = result.Content.ReadAsStringAsync().Result;
 
-                    var payload = Newtonsoft.Json.JsonConvert.SerializeObject(new CallRequest
+                    Console.WriteLine($"Connected to containerID: {containerID}");
+
+                    var messagesChannel = $"whatsapp.{containerID}.message.INTERNAL";
+                    var messagesDisconnect = $"whatsapp.{containerID}.disconnect.INTERNAL";
+
+                    messageDisconnect = c.SubscribeAsync(messagesDisconnect, (sender, args) =>
                     {
-                        Data = Encoding.ASCII.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(token))
+                        disposeReconnect("Desconectado pelo servidor");
                     });
 
-                    var msg = c.Request("client.connect.INTERNAL", Encoding.ASCII.GetBytes(payload), 30000);
-
-                    string someString = Encoding.ASCII.GetString(msg.Data);
-
-                    var error = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorRequest>(someString);
-                    if (error != null && error.Code > 0)
+                    messageReceived = c.SubscribeAsync(messagesChannel, (sender, args) =>
                     {
-                        throw new AuthException(error.Error);
-                    }
+                        try
+                        {
+                            var data = Encoding.ASCII.GetString(args.Message.Data);
 
-                    client = Newtonsoft.Json.JsonConvert.DeserializeObject<LoginToken>(someString);
+                            var obj = JsonConvert.DeserializeObject<CallRequest>(data);
 
-                    Console.WriteLine("client." + client.ClientID.ToString() + ".message.received.INTERNAL");
-                    messageReceived = c.SubscribeAsync("client." + client.ClientID.ToString() + ".message.received.INTERNAL", (sender, args) =>
-                    {
-                        var data = Encoding.ASCII.GetString(args.Message.Data);
+                            var mensagem = Encoding.ASCII.GetString(obj.Data);
 
-                        var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<CallRequest>(data);
+                            var msgData = JsonConvert.DeserializeObject<dto.Message>(mensagem);
 
-                        var mensagem = Encoding.ASCII.GetString(obj.Data);
+                            if (msgData.type == "MESSAGE.RECEIVED")
+                            {
+                                var message = JsonConvert.DeserializeObject<dto.MessageReceived>(JsonConvert.SerializeObject(msgData));
+                                var ok = MessageReceived(message);
+                                if (!ok) return;
+                            }
+                            else if (msgData.type == "MESSAGE.ACK")
+                            {
+                                var message = JsonConvert.DeserializeObject<dto.MessageAck>(JsonConvert.SerializeObject(msgData.data));
+                                MessageAck(message);
+                            }
+                            else
+                            {
+                                MessageJSON(JsonConvert.SerializeObject(msgData.data));
+                            }
 
-                        Console.WriteLine(mensagem);
-
-                        var msgData = Newtonsoft.Json.JsonConvert.DeserializeObject<dto.MessageReceived>(mensagem);
-
-                        c.Publish(args.Message.Reply, Encoding.ASCII.GetBytes(""));
+                            c.Publish(args.Message.Reply, Encoding.ASCII.GetBytes(""));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     });
 
-                    Console.WriteLine("client." + client.ClientID.ToString() + ".message.json.INTERNAL");
-                    messageJson = c.SubscribeAsync("client." + client.ClientID.ToString() + ".message.json.INTERNAL", (sender, args) =>
-                    {
-                        var data = Encoding.ASCII.GetString(args.Message.Data);
-
-                        var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<CallRequest>(data);
-
-                        var mensagem = Encoding.ASCII.GetString(obj.Data);
-
-                        var msgData = Newtonsoft.Json.JsonConvert.DeserializeObject<MessageJson>(mensagem);
-
-                        Console.WriteLine(msgData.Message);
-
-                        c.Publish(args.Message.Reply, Encoding.ASCII.GetBytes(""));
-                    });
-
-                    Console.WriteLine("client." + client.ClientID.ToString() + ".ping.INTERNAL");
-                    ping = c.SubscribeAsync("client." + client.ClientID.ToString() + ".ping.INTERNAL", (sender, args) =>
-                    {
-                        c.Publish(args.Message.Reply, Encoding.ASCII.GetBytes(""));
-                    });
-
-                    var tokenSource1 = new CancellationTokenSource();
-
-                    Task.Run(() => StartSendingPing(), tokenSource1.Token);
+                    var messagesConnect = $"whatsapp.{containerID}.connect.INTERNAL";
+                    c.Publish(messagesConnect, null);
 
                     connected = true;
                 }
                 catch (TimeoutException ex)
                 {
-                    Logs(ex.Message);
-                    Logs("Error auth retry in 5 secounds");
-                    Task.Delay(5000).Wait();
-
-                    if (!dispose)
-                        Task.Run(() => disposeReconnect(ex.Message));
+                    disposeReconnect(ex.Message);
                 }
                 catch (AuthException ex)
                 {
-                    Logs(ex.Message);
-                    Logs("Error auth retry in 5 secounds");
-                    Task.Delay(5000).Wait();
-
-                    if (!dispose)
-                        Task.Run(() => disposeReconnect(ex.Message));
+                    disposeReconnect(ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    Logs("Error auth retry in 5 secounds");
-                    Task.Delay(5000).Wait();
-                    if (!dispose)
-                        Task.Run(() => disposeReconnect(ex.Message));
+                    disposeReconnect(ex.Message);
                 }
                 finally
                 {
@@ -196,66 +172,65 @@ namespace BrzoMessages.Client.NatsConn
             {
                 try
                 {
-                    if (c == null || c.IsClosed())
+                    Console.WriteLine("Ping");
+                    if (c == null)
                     {
-                        break;
+                        continue;
                     }
 
-                    var msg = c.Request("client.alive", Encoding.ASCII.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(client)));
+                    if (c.IsClosed())
+                    {
+                        disposeReconnect("container invalido");
+                        continue;
+                    }
+
+                    var channelAlive = $"whatsapp.{containerID}.alive.GET";
+
+                    var msg = c.Request(channelAlive, null);
                     var data = Encoding.ASCII.GetString(msg.Data);
 
-                    var err = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorRequest>(data);
-                    if (err != null && err.Code > 0)
+                    if (containerID.Contains(data))
                     {
-                        Logs("Error ping in 5 secounds");
-                        Task.Delay(5000).Wait();
-
-                        if (!dispose)
-                            Task.Run(() => disposeReconnect(err.Error));
-
-                        break;
+                        disposeReconnect("container invalido");
+                        continue;
                     }
 
-                    Logs(data);
                 }
-                catch (TimeoutException ex)
+                catch (Exception ex)
                 {
-                    break;
+                    disposeReconnect("container invalido");
+                    continue;
                 }
-                catch (Exception)
+                finally
                 {
-                    break;
+                    await Task.Delay(10000);
                 }
-
-                await Task.Delay(30000);
             }
         }
 
 
         private void disposeReconnect(string error)
         {
-            connected = false;
+            Console.WriteLine($"Desconectado: ${error}");
             Dispose();
-            Logs(error);
-            if (!dispose)
-                Task.Run(() => connect());
+            Console.WriteLine($"Reconectando em 5 segundos...");
+            Task.Delay(5000).Wait();
+            Task.Run(() => connect());
         }
 
         public void Dispose()
         {
             try
             {
-                messageJson?.Unsubscribe();
                 messageReceived?.Unsubscribe();
-                ping?.Unsubscribe();
+                messageDisconnect?.Unsubscribe();
 
-                if (!c.IsClosed())
-                {
-                    // Draining and closing a connection
-                    c?.Drain();
-                    // Closing a connection
-                    c?.Close();
-                }
+                // Draining and closing a connection
+                c?.Drain();
+                // Closing a connection
+                c?.Close();
+
+                c = null;
             }
             catch
             {

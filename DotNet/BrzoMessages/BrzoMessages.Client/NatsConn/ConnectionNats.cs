@@ -22,7 +22,9 @@ namespace BrzoMessages.Client.NatsConn
         private IAsyncSubscription messageReceived;
         private IAsyncSubscription messageDisconnect;
         protected bool connected;
+        protected bool conectando;
         private object _lock = new object();
+        private ManualResetEvent ExitEvent;
 
         class ErrorRequest
         {
@@ -55,8 +57,16 @@ namespace BrzoMessages.Client.NatsConn
 
         protected void connect()
         {
-            if (Monitor.TryEnter(_lock))
+            if (conectando || connected)
             {
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                ExitEvent = new ManualResetEvent(false);
+                conectando = true;
+
                 try
                 {
                     Console.WriteLine("Conectando...");
@@ -110,11 +120,11 @@ namespace BrzoMessages.Client.NatsConn
                     {
                         try
                         {
-                            var data = Encoding.ASCII.GetString(args.Message.Data);
+                            var data = Encoding.UTF8.GetString(args.Message.Data);
 
                             var obj = JsonConvert.DeserializeObject<CallRequest>(data);
 
-                            var mensagem = Encoding.ASCII.GetString(obj.Data);
+                            var mensagem = Encoding.UTF8.GetString(obj.Data);
 
                             var msgData = JsonConvert.DeserializeObject<dto.Message>(mensagem);
 
@@ -134,7 +144,7 @@ namespace BrzoMessages.Client.NatsConn
                                 MessageJSON(JsonConvert.SerializeObject(msgData.data));
                             }
 
-                            c.Publish(args.Message.Reply, Encoding.ASCII.GetBytes(""));
+                            c.Publish(args.Message.Reply, Encoding.UTF8.GetBytes(""));
                         }
                         catch (Exception ex)
                         {
@@ -145,7 +155,10 @@ namespace BrzoMessages.Client.NatsConn
                     var messagesConnect = $"whatsapp.{containerID}.connect.INTERNAL";
                     c.Publish(messagesConnect, null);
 
+                    conectando = false;
                     connected = true;
+
+                    ExitEvent.WaitOne();
                 }
                 catch (TimeoutException ex)
                 {
@@ -159,11 +172,7 @@ namespace BrzoMessages.Client.NatsConn
                 {
                     disposeReconnect(ex.Message);
                 }
-                finally
-                {
-                    Monitor.Exit(_lock);
-                }
-            }
+            });
         }
 
         private async Task StartSendingPing()
@@ -187,7 +196,7 @@ namespace BrzoMessages.Client.NatsConn
                     var channelAlive = $"whatsapp.{containerID}.alive.GET";
 
                     var msg = c.Request(channelAlive, null);
-                    var data = Encoding.ASCII.GetString(msg.Data);
+                    var data = Encoding.UTF8.GetString(msg.Data);
 
                     if (containerID.Contains(data))
                     {
@@ -211,6 +220,9 @@ namespace BrzoMessages.Client.NatsConn
 
         private void disposeReconnect(string error)
         {
+            ExitEvent.Set();
+            connected = false;
+            conectando = false;
             Console.WriteLine($"Desconectado: ${error}");
             Dispose();
             Console.WriteLine($"Reconectando em 5 segundos...");

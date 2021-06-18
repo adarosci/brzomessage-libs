@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageIconUrl>https://brzomessages.com/favicon.ico</PackageIconUrl>
-    <Version>1.6.3</Version>
+    <Version>2.0.3</Version>
     <Company>BrzoMessages.Client</Company>
-    <Description>inclusao de campo lenght no body do evento e campo conten_lenght no envio de audio</Description>
+    <Description>alteração de ascii para utf8</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
